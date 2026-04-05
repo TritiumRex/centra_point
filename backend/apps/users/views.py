@@ -11,11 +11,11 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        # Users see only users in their organizations
         user = self.request.user
-        user_orgs = user.organizations.all() | user.org_roles.values_list('organization', flat=True)
+        owned_org_ids = set(user.organizations.values_list('id', flat=True))
+        member_org_ids = set(user.org_roles.values_list('organization_id', flat=True))
         return User.objects.filter(
-            org_roles__organization__in=user_orgs
+            org_roles__organization_id__in=owned_org_ids | member_org_ids
         ).distinct()
 
     @action(detail=False, methods=['get'])
@@ -31,5 +31,6 @@ class UserOrganizationRoleViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        user_orgs = user.organizations.all() | user.org_roles.values_list('organization', flat=True)
-        return UserOrganizationRole.objects.filter(organization__in=user_orgs)
+        owned_org_ids = set(user.organizations.values_list('id', flat=True))
+        member_org_ids = set(user.org_roles.values_list('organization_id', flat=True))
+        return UserOrganizationRole.objects.filter(organization_id__in=owned_org_ids | member_org_ids)

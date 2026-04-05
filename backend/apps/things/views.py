@@ -10,10 +10,10 @@ class ThingViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        # Users see Things only from their organizations
         user = self.request.user
-        user_orgs = user.organizations.all() | user.org_roles.values_list('organization', flat=True)
-        return Thing.objects.filter(organization__in=user_orgs)
+        owned_org_ids = set(user.organizations.values_list('id', flat=True))
+        member_org_ids = set(user.org_roles.values_list('organization_id', flat=True))
+        return Thing.objects.filter(organization_id__in=owned_org_ids | member_org_ids)
 
     def perform_create(self, serializer):
         # Get user's current organization or primary org

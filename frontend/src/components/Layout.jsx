@@ -1,50 +1,57 @@
 import React from 'react';
-import { Outlet, Link, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink } from 'react-router-dom';
+
+const navItems = [
+  { to: '/admin', label: 'Dashboard', end: true },
+  { to: '/admin/services', label: 'Services' },
+  { to: '/admin/things', label: 'Things' },
+];
 
 export default function Layout() {
-  const navigate = useNavigate();
-
   const handleLogout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-    navigate('/login');
+    window.location.href = '/login';
   };
 
   return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      <aside className="w-64 bg-gray-800 text-white p-6">
-        <h1 className="text-2xl font-bold mb-8">centra_point</h1>
-        <nav className="space-y-4">
-          <Link to="/" className="block hover:bg-gray-700 p-2 rounded">
-            Dashboard
-          </Link>
-          <Link to="/things" className="block hover:bg-gray-700 p-2 rounded">
-            Things
-          </Link>
-          <div className="absolute bottom-6 left-6 right-6">
-            <button
-              onClick={handleLogout}
-              className="w-full bg-red-600 hover:bg-red-700 py-2 rounded"
+    <div className="flex flex-col h-screen bg-gray-900 text-gray-100">
+      {/* Top bar — page navigation */}
+      <header className="h-12 bg-gray-950 border-b border-gray-800 flex items-center px-6 shrink-0">
+        <h1 className="text-sm font-bold tracking-wide text-white mr-8">centra_point</h1>
+        <nav className="flex items-center gap-1">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end || false}
+              className={({ isActive }) =>
+                `px-3 py-1.5 rounded text-sm transition-colors ${
+                  isActive
+                    ? 'bg-blue-600 text-white font-medium'
+                    : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
+                }`
+              }
             >
-              Logout
-            </button>
-          </div>
+              {item.label}
+            </NavLink>
+          ))}
         </nav>
-      </aside>
-
-      {/* Main content */}
-      <main className="flex-1 overflow-auto">
-        {/* Top navigation */}
-        <header className="bg-white border-b px-6 py-4">
-          <h2 className="text-xl font-semibold">Administration</h2>
-        </header>
-
-        {/* Page content */}
-        <div className="p-6">
-          <Outlet />
+        <div className="ml-auto flex items-center gap-4">
+          <span className="text-xs text-gray-500">frank@tibernium.com</span>
+          <button
+            onClick={handleLogout}
+            className="text-xs text-gray-500 hover:text-red-400 transition-colors"
+          >
+            Logout
+          </button>
         </div>
-      </main>
+      </header>
+
+      {/* Content area */}
+      <div className="flex-1 overflow-hidden">
+        <Outlet />
+      </div>
     </div>
   );
 }

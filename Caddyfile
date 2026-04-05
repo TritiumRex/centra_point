@@ -1,0 +1,69 @@
+# centra_point — main app (frontend + API)
+:80 {
+	# API routes → Django backend
+	handle /api/* {
+		reverse_proxy backend:8000
+	}
+
+	# Django admin
+	handle /django-admin/* {
+		uri strip_prefix /django-admin
+		rewrite * /admin{uri}
+		reverse_proxy backend:8000
+	}
+
+	# Static files
+	handle /static/* {
+		root * /app
+		file_server
+	}
+
+	handle /media/* {
+		root * /app
+		file_server
+	}
+
+	# Everything else → React frontend
+	handle {
+		reverse_proxy frontend:3000
+	}
+}
+
+# Proxmox proxy — HTTPS backend, self-signed cert
+:9006 {
+	reverse_proxy https://192.168.1.5:8006 {
+		transport http {
+			tls_insecure_skip_verify
+		}
+		header_up Host 192.168.1.5:8006
+		header_up X-Forwarded-Proto https
+	}
+	header -X-Frame-Options
+	header -Content-Security-Policy
+}
+
+# Mailcow proxy — HTTPS backend
+:9025 {
+	reverse_proxy https://192.168.1.25 {
+		transport http {
+			tls_insecure_skip_verify
+		}
+		header_up Host mail.tibernium.com
+		header_up X-Forwarded-Proto https
+	}
+	header -X-Frame-Options
+	header -Content-Security-Policy
+}
+
+# Kibana proxy — HTTPS backend
+:9200 {
+	reverse_proxy https://192.168.1.21:5601 {
+		transport http {
+			tls_insecure_skip_verify
+		}
+		header_up Host kibana.tibernium.com
+		header_up X-Forwarded-Proto https
+	}
+	header -X-Frame-Options
+	header -Content-Security-Policy
+}

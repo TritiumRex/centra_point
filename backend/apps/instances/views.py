@@ -13,17 +13,23 @@ class InstanceViewSet(viewsets.ModelViewSet):
     ordering = ['-created_at']
 
     def get_queryset(self):
-        # Users see instances only from Things in their organizations
         user = self.request.user
-        user_orgs = user.organizations.all() | user.org_roles.values_list('organization', flat=True)
-        return Instance.objects.filter(thing__organization__in=user_orgs)
+        owned_org_ids = set(user.organizations.values_list('id', flat=True))
+        member_org_ids = set(user.org_roles.values_list('organization_id', flat=True))
+        all_org_ids = owned_org_ids | member_org_ids
+        qs = Instance.objects.filter(thing__organization_id__in=all_org_ids)
+        thing_id = self.request.query_params.get('thing')
+        if thing_id:
+            qs = qs.filter(thing_id=thing_id)
+        return qs
 
     def perform_create(self, serializer):
-        # Verify user has access to the Thing
         thing = serializer.validated_data['thing']
-        user_orgs = self.request.user.organizations.all() | self.request.user.org_roles.values_list('organization', flat=True)
+        user = self.request.user
+        owned_org_ids = set(user.organizations.values_list('id', flat=True))
+        member_org_ids = set(user.org_roles.values_list('organization_id', flat=True))
 
-        if thing.organization not in user_orgs:
+        if thing.organization_id not in (owned_org_ids | member_org_ids):
             raise PermissionDenied("You don't have access to this Thing")
 
         serializer.save(created_by=self.request.user)

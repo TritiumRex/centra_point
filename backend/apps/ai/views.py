@@ -13,8 +13,9 @@ class AIAnalysisViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        user_orgs = user.organizations.all() | user.org_roles.values_list('organization', flat=True)
-        return AIAnalysis.objects.filter(instance__thing__organization__in=user_orgs)
+        owned_org_ids = set(user.organizations.values_list('id', flat=True))
+        member_org_ids = set(user.org_roles.values_list('organization_id', flat=True))
+        return AIAnalysis.objects.filter(instance__thing__organization_id__in=owned_org_ids | member_org_ids)
 
     @action(detail=False, methods=['post'])
     def analyze(self, request):
@@ -25,9 +26,9 @@ class AIAnalysisViewSet(viewsets.ModelViewSet):
         except Instance.DoesNotExist:
             return Response({'error': 'Instance not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Check permission
-        user_orgs = request.user.organizations.all() | request.user.org_roles.values_list('organization', flat=True)
-        if instance.thing.organization not in user_orgs:
+        owned_org_ids = set(request.user.organizations.values_list('id', flat=True))
+        member_org_ids = set(request.user.org_roles.values_list('organization_id', flat=True))
+        if instance.thing.organization_id not in (owned_org_ids | member_org_ids):
             return Response({'error': 'Access denied'}, status=status.HTTP_403_FORBIDDEN)
 
         # Generate analysis
