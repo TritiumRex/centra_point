@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'apps.things',
     'apps.instances',
     'apps.ai',
+    'apps.mail',
 ]
 
 MIDDLEWARE = [
