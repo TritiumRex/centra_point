@@ -29,17 +29,32 @@
 	}
 }
 
+# TrueNAS proxy — strips X-Frame-Options so iframe works
+:9010 {
+	redir / /ui/ 302
+	reverse_proxy http://192.168.1.10 {
+		header_up Host 192.168.1.10
+		header_up X-Forwarded-Proto http
+	}
+	header -X-Frame-Options
+	header -Content-Security-Policy
+}
+
 # Proxmox proxy — HTTPS backend, self-signed cert
 :9006 {
 	reverse_proxy https://192.168.1.5:8006 {
 		transport http {
 			tls_insecure_skip_verify
 		}
-		header_up Host 192.168.1.5:8006
+		header_up Host {http.request.host}
 		header_up X-Forwarded-Proto https
 	}
 	header -X-Frame-Options
 	header -Content-Security-Policy
+	header Access-Control-Allow-Origin "*"
+	header Access-Control-Allow-Credentials "true"
+	header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+	header Access-Control-Allow-Headers "*"
 }
 
 # Mailcow proxy — HTTPS backend

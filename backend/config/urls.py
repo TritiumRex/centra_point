@@ -20,6 +20,7 @@ urlpatterns = [
     path('api/instances/', include('apps.instances.urls')),
     path('api/ai/', include('apps.ai.urls')),
     path('api/mail/', include('apps.mail.urls')),
+    path('api/proxy/', include('apps.proxy.urls')),
 ]
 
 if settings.DEBUG:

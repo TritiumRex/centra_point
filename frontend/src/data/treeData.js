@@ -4,7 +4,7 @@ const treeData = [
     label: 'Proxmox',
     icon: '🖥',
     children: [
-      { id: 'proxmox-ui', label: 'Proxmox UI', icon: '◎', url: 'http://localhost:9006/' },
+      { id: 'proxmox-ui', label: 'Proxmox UI', icon: '◎', panel: 'proxmox', url: 'http://localhost:9006/' },
       {
         id: 'proxmox-vms',
         label: 'Virtual Machines',
@@ -72,10 +72,11 @@ const treeData = [
     label: 'TrueNAS',
     icon: '💾',
     children: [
-      { id: 'truenas-ui', label: 'TrueNAS Admin', icon: '◎', url: 'http://192.168.1.10' },
+      { id: 'truenas-ui', label: 'TrueNAS Admin', icon: '◎', panel: 'truenas', url: 'http://192.168.1.10' },
       { id: 'comfyui', label: 'ComfyUI', icon: '🖼', url: 'http://192.168.1.10:8188' },
       { id: 'musicgen', label: 'MusicGen', icon: '🎶', url: 'http://192.168.1.10:7865' },
       { id: 'ollama', label: 'Ollama', icon: '🤖', url: 'http://192.168.1.10:30068' },
+      { id: 'open-webui', label: 'Open WebUI', icon: '💬', url: 'http://localhost:3002' },
     ],
   },
   {
@@ -113,9 +114,7 @@ const treeData = [
         id: 'workstation-docker',
         label: 'Docker',
         icon: '▸',
-        children: [
-          { id: 'centra-point', label: 'centra_point', icon: '🏠', url: 'http://localhost:3001' },
-        ],
+        children: [],
       },
     ],
   },

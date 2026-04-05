@@ -47,6 +47,12 @@ services:
       REDIS_URL: redis://redis:6379/0
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001}
+      PROXMOX_HOST: ${PROXMOX_HOST:-https://192.168.1.5:8006}
+      PROXMOX_USER: ${PROXMOX_USER:-root@pam}
+      PROXMOX_PASSWORD: ${PROXMOX_PASSWORD:-}
+      TRUENAS_HOST: ${TRUENAS_HOST:-http://192.168.1.10}
+      TRUENAS_USER: ${TRUENAS_USER:-truenas_admin}
+      TRUENAS_PASSWORD: ${TRUENAS_PASSWORD:-}
     ports:
       - "8000:8000"
     depends_on:
@@ -81,6 +87,7 @@ services:
       - "80:80"
       - "443:443"
       - "9006:9006"
+      - "9010:9010"
       - "9025:9025"
       - "9200:9200"
     volumes:
@@ -95,6 +102,24 @@ services:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/api/health/"]
       interval: 10s
       timeout: 5s
+      retries: 5
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: centra_point_openwebui
+    environment:
+      OLLAMA_BASE_URLS: "http://host.docker.internal:11434;http://192.168.1.10:30068"
+      WEBUI_AUTH: "false"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - open_webui_data:/app/backend/data
+    ports:
+      - "3002:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 10s
       retries: 5
 
   sshbridge:
@@ -120,3 +145,4 @@ volumes:
   postgres_data:
   caddy_data:
   caddy_config:
+  open_webui_data:

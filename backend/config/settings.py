@@ -154,3 +154,11 @@ CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+# External service proxies
+PROXMOX_HOST = config('PROXMOX_HOST', default='https://192.168.1.5:8006')
+PROXMOX_USER = config('PROXMOX_USER', default='root@pam')
+PROXMOX_PASSWORD = config('PROXMOX_PASSWORD', default='')
+TRUENAS_HOST = config('TRUENAS_HOST', default='http://192.168.1.10')
+TRUENAS_USER = config('TRUENAS_USER', default='truenas_admin')
+TRUENAS_PASSWORD = config('TRUENAS_PASSWORD', default='')
