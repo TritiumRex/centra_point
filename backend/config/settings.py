@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.things',
     'apps.instances',
+    'apps.ai',
 ]
 
 MIDDLEWARE = [
