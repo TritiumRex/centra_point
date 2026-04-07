@@ -50,6 +50,8 @@ services:
       PROXMOX_HOST: ${PROXMOX_HOST:-https://192.168.1.5:8006}
       PROXMOX_USER: ${PROXMOX_USER:-root@pam}
       PROXMOX_PASSWORD: ${PROXMOX_PASSWORD:-}
+      MAILCOW_HOST: ${MAILCOW_HOST:-https://192.168.1.25}
+      MAILCOW_API_KEY: ${MAILCOW_API_KEY:-}
       TRUENAS_HOST: ${TRUENAS_HOST:-http://192.168.1.10}
       TRUENAS_USER: ${TRUENAS_USER:-truenas_admin}
       TRUENAS_PASSWORD: ${TRUENAS_PASSWORD:-}
@@ -62,6 +64,7 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app
+      - /var/run/docker.sock:/var/run/docker.sock
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health/')\""]
       interval: 10s
@@ -89,7 +92,12 @@ services:
       - "9006:9006"
       - "9010:9010"
       - "9025:9025"
+      - "9080:9080"
       - "9200:9200"
+      - "9030:9030"
+      - "9031:9031"
+      - "9032:9032"
+      - "9033:9033"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ./backend/staticfiles:/app/staticfiles:ro

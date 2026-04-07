@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     'apps.instances',
     'apps.ai',
     'apps.mail',
+    'apps.proxy',
+    'apps.menu',
 ]
 
 MIDDLEWARE = [
@@ -138,8 +140,8 @@ from datetime import timedelta
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': False,
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
@@ -159,6 +161,8 @@ CELERY_RESULT_SERIALIZER = 'json'
 PROXMOX_HOST = config('PROXMOX_HOST', default='https://192.168.1.5:8006')
 PROXMOX_USER = config('PROXMOX_USER', default='root@pam')
 PROXMOX_PASSWORD = config('PROXMOX_PASSWORD', default='')
+MAILCOW_HOST = config('MAILCOW_HOST', default='https://192.168.1.25')
+MAILCOW_API_KEY = config('MAILCOW_API_KEY', default='')
 TRUENAS_HOST = config('TRUENAS_HOST', default='http://192.168.1.10')
 TRUENAS_USER = config('TRUENAS_USER', default='truenas_admin')
 TRUENAS_PASSWORD = config('TRUENAS_PASSWORD', default='')

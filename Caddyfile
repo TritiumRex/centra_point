@@ -70,6 +70,16 @@
 	header -Content-Security-Policy
 }
 
+# qBittorrent proxy — strips X-Frame-Options and CSP so iframe works
+:9080 {
+	reverse_proxy http://192.168.1.20:8080 {
+		header_up Host 192.168.1.20:8080
+		header_up X-Forwarded-Proto http
+	}
+	header -X-Frame-Options
+	header -Content-Security-Policy
+}
+
 # Kibana proxy — HTTPS backend
 :9200 {
 	reverse_proxy https://192.168.1.21:5601 {
@@ -79,6 +89,38 @@
 		header_up Host kibana.tibernium.com
 		header_up X-Forwarded-Proto https
 	}
+	header -X-Frame-Options
+	header -Content-Security-Policy
+}
+
+# Grafana proxy — monitoring VM
+:9030 {
+	reverse_proxy http://192.168.1.19:3000 {
+		header_up Host 192.168.1.19:3000
+	}
+	header -X-Frame-Options
+	header -Content-Security-Policy
+}
+
+# Uptime Kuma proxy — monitoring VM
+:9031 {
+	reverse_proxy http://192.168.1.19:3001 {
+		header_up Host 192.168.1.19:3001
+	}
+	header -X-Frame-Options
+	header -Content-Security-Policy
+}
+
+# Monitoring Hub — landing page for all monitoring services
+:9033 {
+	reverse_proxy http://192.168.1.19:8888
+	header -X-Frame-Options
+	header -Content-Security-Policy
+}
+
+# Dockge proxy — monitoring VM
+:9032 {
+	reverse_proxy http://192.168.1.19:5001
 	header -X-Frame-Options
 	header -Content-Security-Policy
 }

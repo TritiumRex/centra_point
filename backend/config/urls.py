@@ -21,6 +21,7 @@ urlpatterns = [
     path('api/ai/', include('apps.ai.urls')),
     path('api/mail/', include('apps.mail.urls')),
     path('api/proxy/', include('apps.proxy.urls')),
+    path('api/menu/', include('apps.menu.urls')),
 ]
 
 if settings.DEBUG:

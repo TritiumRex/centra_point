@@ -9,7 +9,7 @@ function TreeNode({ node, depth, activeId, onSelect }) {
     if (hasChildren) {
       setExpanded(!expanded);
     }
-    if (node.url) {
+    if (node.url || node.sshHost || node.panel) {
       onSelect(node);
     }
   };

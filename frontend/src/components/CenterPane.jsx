@@ -2,10 +2,14 @@ import React from 'react';
 import Terminal from './Terminal';
 import ProxmoxPanel from './ProxmoxPanel';
 import TrueNASPanel from './TrueNASPanel';
+import MailcowPanel from './MailcowPanel';
+import DockerPanel from './DockerPanel';
 
 const PANELS = {
   proxmox: ProxmoxPanel,
   truenas: TrueNASPanel,
+  mailcow: MailcowPanel,
+  docker: DockerPanel,
 };
 
 function TabContent({ node }) {
@@ -43,17 +47,34 @@ export default function CenterPane({ tabs, activeTabId }) {
     );
   }
 
+  // SSH terminals stay mounted (hidden) to keep connections alive.
+  // Everything else only renders when active.
+  const sshTabs = tabs.filter(t => t.sshHost);
+  const activeTab = tabs.find(t => t.id === activeTabId);
+  const activeIsSSH = activeTab?.sshHost;
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden relative">
-      {tabs.map(tab => (
+      {/* SSH terminals — always mounted, toggled with visibility */}
+      {sshTabs.map(tab => (
         <div
           key={tab.id}
           className="absolute inset-0 flex flex-col"
-          style={{ visibility: tab.id === activeTabId ? 'visible' : 'hidden', zIndex: tab.id === activeTabId ? 1 : 0 }}
+          style={{
+            visibility: tab.id === activeTabId ? 'visible' : 'hidden',
+            zIndex: tab.id === activeTabId ? 1 : 0,
+          }}
         >
           <TabContent node={tab} />
         </div>
       ))}
+
+      {/* Non-SSH active tab — mounted only when active */}
+      {activeTab && !activeIsSSH && (
+        <div className="absolute inset-0 flex flex-col" style={{ zIndex: 1 }}>
+          <TabContent node={activeTab} />
+        </div>
+      )}
     </div>
   );
 }

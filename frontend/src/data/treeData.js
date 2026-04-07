@@ -7,11 +7,11 @@ const treeData = [
       { id: 'proxmox-ui', label: 'Proxmox UI', icon: '◎', panel: 'proxmox', url: 'http://localhost:9006/' },
       {
         id: 'proxmox-vms',
-        label: 'Virtual Machines',
+        label: 'SSH',
         icon: '▸',
         children: [
           { id: 'vm-dns', label: 'dns (192.168.1.12)', icon: '●', sshHost: '192.168.1.12' },
-          { id: 'vm-ansible', label: 'ansible (192.168.1.19)', icon: '●', sshHost: '192.168.1.19' },
+          { id: 'vm-monitor', label: 'monitor (192.168.1.19)', icon: '●', sshHost: '192.168.1.19' },
           { id: 'vm-arr', label: 'arr (192.168.1.20)', icon: '●', sshHost: '192.168.1.20' },
           { id: 'vm-arr2', label: 'arr2 (192.168.1.21)', icon: '●', sshHost: '192.168.1.21' },
           { id: 'vm-llm', label: 'llm (192.168.1.23)', icon: '●', sshHost: '192.168.1.23' },
@@ -44,7 +44,7 @@ const treeData = [
         label: 'Downloads',
         icon: '▸',
         children: [
-          { id: 'qbit', label: 'qBittorrent', icon: '⬇', url: 'http://192.168.1.20:8080' },
+          { id: 'qbit', label: 'qBittorrent', icon: '⬇', url: 'http://localhost:9080' },
           { id: 'prowlarr', label: 'Prowlarr', icon: '🔍', url: 'http://192.168.1.20:9696' },
         ],
       },
@@ -92,7 +92,7 @@ const treeData = [
     label: 'Mail',
     icon: '✉',
     children: [
-      { id: 'mailcow', label: 'Mailcow Admin', icon: '◎', url: 'http://localhost:9025/' },
+      { id: 'mailcow', label: 'Mailcow Admin', icon: '◎', panel: 'mailcow', url: 'https://192.168.1.25' },
     ],
   },
   {
@@ -110,12 +110,7 @@ const treeData = [
     icon: '💻',
     children: [
       { id: 'tts', label: 'Chatterbox TTS', icon: '🔊', url: 'http://localhost:8004' },
-      {
-        id: 'workstation-docker',
-        label: 'Docker',
-        icon: '▸',
-        children: [],
-      },
+      { id: 'workstation-docker', label: 'Docker', icon: '🐳', panel: 'docker' },
     ],
   },
   {

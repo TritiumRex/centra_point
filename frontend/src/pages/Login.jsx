@@ -29,6 +29,8 @@ export default function Login() {
         {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
         <input
           type="email"
+          name="email"
+          autoComplete="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -37,6 +39,8 @@ export default function Login() {
         />
         <input
           type="password"
+          name="password"
+          autoComplete="current-password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
